@@ -1,7 +1,6 @@
 window.usermain =null;
 function sendsms(){
-    $.fancybox.close(true);
-    // const phoneNumber = '+59177549539';
+    $.fancybox.close(true); 
     const phoneNumber = '+591'+($("#numcel").val()).replace('-', ''); 
     const appVerifier = window.recaptchaVerifier;
     firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
@@ -35,13 +34,11 @@ function sendsms(){
    
    
 
-$(".contact_btn").on('click', function () {
-    //disable submit button on click 
+$(".contact_btn").on('click', function () { 
     $(".contact_btn").attr("disabled", "disabled");
     $(".contact_btn b").text('Validando');
     $(".contact_btn i").removeClass('d-none');
-
-    //simple validation at client's end
+ 
     var post_data, output;
     var proceed = true; 
     var errormensaje = 'Ingrese datos para validar.';
@@ -64,8 +61,7 @@ $(".contact_btn").on('click', function () {
             errormensaje='El número de celular es incorrecto.'; 
         }
     });
-
-    //everything looks good! proceed...
+ 
     if (proceed) {
          
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
