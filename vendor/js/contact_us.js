@@ -34,12 +34,12 @@ function sendsms(){
    
    
 
-$(".contact_btn").on('click', function () { 
+ function validatedata() { 
     $(".contact_btn").attr("disabled", "disabled");
     $(".contact_btn b").text('Validando');
     $(".contact_btn i").removeClass('d-none');
  
-    var post_data, output;
+    var output;
     var proceed = true; 
     var errormensaje = 'Ingrese datos para validar.';
  
@@ -63,33 +63,11 @@ $(".contact_btn").on('click', function () {
     });
  
     if (proceed) {
-         
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'normal',
-            'callback': function(response) {
-              sendsms();
-            },
-            'expired-callback': function() {
-                console.log("expired-callback");
-                window.recaptchaVerifier.reset();
-            } 
-             
-        }); 
-        recaptchaVerifier.render().then(function(widgetId) {
-            window.recaptchaWidgetId = widgetId;
-            grecaptcha.reset(window.recaptchaWidgetId); 
-            $.fancybox.open({
-                src  : '#capcha',
-                type : 'inline',
-                opts : {
-                    animationDuration : 500 
-                }
-            }); 
-        });
-
+        sendsms();$( "#sign-in-button" ).prop( "disabled", true );
     }
     else
     {
+        grecaptcha.reset(window.recaptchaWidgetId); 
         output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">'+errormensaje+'</div>';
         $("#result").hide().html(output).slideDown();
         $(".contact_btn i").addClass('d-none');    
@@ -97,7 +75,7 @@ $(".contact_btn").on('click', function () {
     }
 
 
-});
+};
 
  
 $(".modal_contact_btn").on('click', function () { 
@@ -212,11 +190,20 @@ $(".modal_validate_code").on('click', function (){
     });
  
     if (proceed === "true") {
+        
         $(".modal_validate_code").addClass('d-none');
         $( "#codein" ).prop( "disabled", true ); 
-        window.confirmationResult.confirm($("#codein").val()).then((result) => { 
+        window.confirmationResult.confirm($("#codein").val()).then((result) => {
+            $.fancybox.close(true);  
             window.usermain.telcelular=$('#numcel').val().replace(/\_/g, '').replace(/\-/g, '');
             window.usermain.iud=result.user.uid;  
+            setTimeout(function(){$.fancybox.open({
+                src  : '#animatedModal',
+                type : 'inline',
+                opts : {
+                    animationDuration : 500 
+                }
+            }); }, 1000);
         }).catch((error) => {
             $( "#codein" ).prop( "disabled", false );
             output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">El código ingresado no es el correcto.</div>';
@@ -241,6 +228,23 @@ $(".modal_validate_code").on('click', function (){
 $("#modal-contact-getcode").submit(function(e){ 
     e.preventDefault();  
 });
+$("#contact-form-data").submit(function(e){ 
+    e.preventDefault();  
+    console.log('entrollllllllll');
+});
+ 
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
+    'size': 'invisible',
+    'callback': function(response) {
+        validatedata();
+    }
+  });
+
+  recaptchaVerifier.render().then(function(widgetId) {
+    window.recaptchaWidgetId = widgetId; 
+    console.log('entro al render');
+  });
+
 var buscador= _.debounce(function(word,fun){
     $.post('servidor/getsocioupdate.php', {busca:word}, function(res){
        fun(res); 
@@ -259,7 +263,7 @@ $("#inputcard2").keyup(function(){
           if(user.value>0){ 
               if(user.data.length==1){  
                    document.getElementById('inputcard2').value=user.data[0].ci;
-                   document.getElementById('inputname').value=user.data[0].nombre;
+                   document.getElementById('inputname').value=user.data[0].nombre  +" "+ user.data[0].apaterno +" "+ user.data[0].amaterno;
                    window.usermain=user.data[0];  
                    window.usermain.des= _.reduce(user.des, function(result, value) {
                         if(value.idfuerza==window.usermain.idfuerza) { 
@@ -277,7 +281,7 @@ $("#inputcard2").keyup(function(){
                    $( "#numcel" ).focus();
               }else{   
                   _.forEach(user.data, function(value) { 
-                    document.querySelector('#listgarante2').innerHTML+="<option value='" + value.ci + "'>" + value.nombre + "</option>";
+                    document.querySelector('#listgarante2').innerHTML+="<option value='" + value.ci + "'>" + value.nombre +" "+ value.apaterno +" "+ value.amaterno +"</option>";
                   });
               }	
           }else{ 
