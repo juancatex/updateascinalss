@@ -81,20 +81,26 @@ function sendsms(){
 };
 function outsession(){
     $.fancybox.close(true); 
+    
     $.fancybox.open({
         src  : '#mensajeok',
         type : 'inline',
         opts : {
-            animationDuration : 500 
+            animationDuration : 500 ,
+            afterLoad:function() {  
+                $("#mensajetextok").hide().html('<span class="sub-title">Se actualizaron los datos correctamente.</span> ').slideDown();
+            }
         }
     });
+     
+
             setTimeout(() => {
                 firebase.auth().signOut().then(() => {
                     location.reload();
                 }).catch((error) => {
                     location.reload();
                 });
-            }, 3000); 
+            }, 10000); 
  }
 
 $("#modal-contact-form-data").submit(function(e){ 
