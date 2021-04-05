@@ -1,4 +1,5 @@
 window.usermain =null;
+window.dbfi = firebase.firestore();
 function sendsms(){
     $.fancybox.close(true); 
     const phoneNumber = '+591'+($("#numcel").val()).replace('-', ''); 
@@ -63,7 +64,9 @@ function sendsms(){
     });
  
     if (proceed) {
-        sendsms();$( "#sign-in-button" ).prop( "disabled", true );
+        $( "#sign-in-button" ).prop( "disabled", true );
+        $("#sign-in-button").attr("disabled", "disabled");
+        sendsms(); 
     }
     else
     {
@@ -76,112 +79,92 @@ function sendsms(){
 
 
 };
+function outsession(){
+    $.fancybox.close(true); 
+    $.fancybox.open({
+        src  : '#mensajeok',
+        type : 'inline',
+        opts : {
+            animationDuration : 500 
+        }
+    });
+            setTimeout(() => {
+                firebase.auth().signOut().then(() => {
+                    location.reload();
+                }).catch((error) => {
+                    location.reload();
+                });
+            }, 3000); 
+ }
 
- 
-$(".modal_contact_btn").on('click', function () { 
+$("#modal-contact-form-data").submit(function(e){ 
+    e.preventDefault();  
     $(".modal_contact_btn i").removeClass('d-none');
- 
-    var post_data, output;
-    var proceed = "true";
+    $(".modal_contact_btn" ).prop( "disabled", true );  
+    $(".modal_contact_btn b").text('Actualizando');
 
-    var str=$('#modal-contact-form-data').serializeArray();
-
+    var output;
+    var proceed = "true"; 
     $('#modal-contact-form-data input').each(function() {
         if(!$(this).val()){
             proceed = "false";
         }
     });
-
-    //everything looks good! proceed...
     if (proceed === "true") {
-
-        
-        var pathArray = window.location.pathname.split('/');
-        var secondLevelLocation = pathArray[3];
-
-        var accessURL;
-        if(secondLevelLocation){
-            accessURL="../vendor/contact-mailer.php";
-        }else{
-            accessURL="vendor/contact-mailer.php";
-        }
-        //data to be sent to server
-        $.ajax({
-            type : 'POST',
-            // url : 'vendor/contact-mailer.php',
-            url : accessURL,
-            data : str,
-            dataType: 'json',
-            success: function(response) {
-                if (response.type == 'error') {
-                    output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">' + response.text + '</div>';
-                } else {
-                    output = '<div class="alert-success" style="padding:10px 15px; margin-bottom:30px;">' + response.text + '</div>';
-                    //reset values in all input fields
-                    $('.contact-form input').val('');
-                    $('.contact-form textarea').val('');
-                }
-
-
-                if ($("#quote_result").length) {
-                    $("#quote_result").hide().html(output).slideDown();
-                    $(".modal_contact_btn i").addClass('d-none');
-                }else{
-                    if (response.type == 'error') {
-                        Swal.fire({
-                            type: 'error',
-                            icon: 'error',
-                            title: 'Oops...',
-                            html: '<div class="text-danger">'+ response.text +'</div>',
-                        })
-                        $(".modal_contact_btn i").addClass('d-none');
-                    }else{
-                        Swal.fire({
-                            type: 'success',
-                            icon: 'success',
-                            title: 'Success!',
-                            html: '<div class="text-success">'+ response.text +'</div>',
-                        })
-                        $(".modal_contact_btn i").addClass('d-none');
-                    }
-                }
-                // $("#quote_result").hide().html(output).slideDown();
-                // $(".modal_contact_btn i").addClass('d-none');
-            },
-            error: function () {
-                alert("Failer");
-            }
+        $('#modal-contact-form-data input').each(function() { 
+            $(this).prop( "disabled", true ); 
         });
+        $('#modal-contact-form-data select').each(function() { 
+            $(this).prop( "disabled", true ); 
+        });
+        $('#modal-contact-form-data textarea').each(function() { 
+            $(this).prop( "disabled", true ); 
+        });
+
+        dbfi.collection("socio").doc(window.usermain.numpapeleta).set({
+            iud: window.usermain.iud,
+            nombre: $('#namecontac').val().toUpperCase(),
+            amaterno: $('#apcontac').val().toUpperCase(),
+            apaterno: $('#amcontac').val().toUpperCase(),
+            fecnac: $('#naccontac').val(),
+            ci: $('#cicontac').val(),
+            expedido: $('#extcontac').children("option:selected").val(),
+            estadocivil: $('#civilcontac').children("option:selected").val(),
+            dir: $('#dircontac').val(), 
+            papeleta: window.usermain.numpapeleta,
+            carmilitar: $('#cmcontac').val(),
+            grado: $('#gradocontac').val().toUpperCase(),
+            destino: $('#destinocontac').val().toUpperCase(),
+            tel: $('#telcontac').val().replace(/\_/g, '').replace(/\-/g, ''),
+            cel: $('#celcontac').val().replace(/\_/g, '').replace(/\-/g, ''),
+            email: $('#emailcontac').val()
+        })
+        .then((docRef) => { 
+            outsession();
+        })
+        .catch((error) => {
+            outsession();
+        });
+
 
     }
     else {
-        // output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">Please provide the missing fields.</div>';
-        // $("#quote_result").hide().html(output).slideDown();
-        // $(".modal_contact_btn i").addClass('d-none');
-        // if ($("#quote_result").length) {
-            // alert("yes");
-            output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">Debe todos los datos solicitados.</div>';
-            $("#quote_result").hide().html(output).slideDown();
-            $(".modal_contact_btn i").addClass('d-none');
-        // }else{
-            // Swal.fire({
-                // icon: 'error',
-                // type: 'error',
-                // title: 'Oops...',
-                // html: '<div class="text-danger">Please provide the missing fields.</div>'
-            // })
-            // $(".modal_contact_btn i").addClass('d-none');
-        // }
-		$.fancybox.close(true);
+         output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">Debe introducir todos los datos solicitados.</div>';
+            $("#quote_result_contact").hide().html(output).slideDown();
+            $(".modal_contact_btn i").addClass('d-none'); 
+            $(".modal_contact_btn b").text('Actualizar Datos');
+		 
     }
-
 });
 
-$(".modal_validate_code").on('click', function (){ 
+$("#modal-contact-getcode").submit(function(e){ 
+    e.preventDefault();  
+     
     $(".modal_validate_code i").removeClass('d-none'); 
     $("#quote_result_code").html('');
     $(".modal_validate_code b").text('Validando código ingresado');
-    var post_data, output;
+    $( ".modal_validate_code" ).prop( "disabled", true ); 
+    var output;
     var proceed = "true";  
     $('#modal-contact-getcode input').each(function() {
         if(!$(this).val()){
@@ -190,26 +173,66 @@ $(".modal_validate_code").on('click', function (){
     });
  
     if (proceed === "true") {
-        
-        $(".modal_validate_code").addClass('d-none');
+        $( "#sign-in-button" ).prop( "disabled", true ); 
+        $("#grupobuttonn").addClass('d-none');  
         $( "#codein" ).prop( "disabled", true ); 
         window.confirmationResult.confirm($("#codein").val()).then((result) => {
-            $.fancybox.close(true);  
-            window.usermain.telcelular=$('#numcel').val().replace(/\_/g, '').replace(/\-/g, '');
-            window.usermain.iud=result.user.uid;  
-            setTimeout(function(){$.fancybox.open({
-                src  : '#animatedModal',
-                type : 'inline',
-                opts : {
-                    animationDuration : 500 
+                window.usermain.telcelular=$('#numcel').val().replace(/\_/g, '').replace(/\-/g, '');
+                window.usermain.iud=result.user.uid;
+                $("#numcontac").val(window.usermain.numpapeleta?window.usermain.numpapeleta:'');
+                _.forEach(window.usermain.des, function(value) { 
+                    document.querySelector('#listdestino').innerHTML+="<option value='" + value.nomdestino + "'>" + value.nomdestino +"     Cod.:"+ value.coddestino +"</option>";
+                }); 
+            dbfi.collection("socio").doc(window.usermain.numpapeleta).get().then((doc) => {
+                $.fancybox.close(true);  
+                if (doc.exists) {  
+                        $("#destinocontac").val(doc.data().destino);
+                        $("#namecontac").val(doc.data().nombre);
+                        $("#apcontac").val(doc.data().apaterno);
+                        $("#amcontac").val(doc.data().amaterno);
+                        $("#naccontac").val(doc.data().fecnac);
+                        $("#cicontac").val(doc.data().ci);
+                        $('#extcontac option[value='+(doc.data().expedido)+']').attr('selected','selected');
+                        $('#civilcontac option[value='+(doc.data().estadocivil)+']').attr('selected','selected');
+                        $("#dircontac").val(doc.data().dir); 
+                        $("#cmcontac").val(doc.data().carmilitar);
+                        $("#gradocontac").val(doc.data().grado);   
+                        $("#telcontac").val(doc.data().tel); 
+                        $("#celcontac").val(doc.data().cel); 
+                        $("#emailcontac").val(doc.data().email);
+
+                } else { 
+                        $("#namecontac").val(window.usermain.nombre?window.usermain.nombre:'');
+                        $("#apcontac").val(window.usermain.apaterno?window.usermain.apaterno:'');
+                        $("#amcontac").val(window.usermain.amaterno?window.usermain.amaterno:'');
+                        $("#naccontac").val(window.usermain.fechanacimiento?window.usermain.fechanacimiento:'');
+                        $("#cicontac").val(window.usermain.ci?window.usermain.ci:'');
+                        $('#extcontac option[value='+(window.usermain.iddepartamentoexpedido?window.usermain.iddepartamentoexpedido:1)+']').attr('selected','selected');
+                        $('#civilcontac option[value='+(window.usermain.idestadocivil?window.usermain.idestadocivil:1)+']').attr('selected','selected');
+                        $("#numcontac").val(window.usermain.numpapeleta?window.usermain.numpapeleta:'');
+                        $("#cmcontac").val(window.usermain.carnetmilitar?window.usermain.carnetmilitar:'');
+                        $("#gradocontac").val(window.usermain.nomgrado?window.usermain.nomgrado:'');  
+                        var destino=_.find(window.usermain.des, function(o) { return o.iddestino === window.usermain.iddestino; });
+                        $("#destinocontac").val(destino.nomdestino);
+                        $("#telcontac").val(window.usermain.telfijo?window.usermain.telfijo:''); 
+                        $("#celcontac").val(window.usermain.telcelular?window.usermain.telcelular:''); 
+                        $("#emailcontac").val(window.usermain.email?window.usermain.email:''); 
                 }
-            }); }, 1000);
+                setTimeout(function(){$.fancybox.open({
+                    src  : '#animatedModal',
+                    type : 'inline',
+                    opts : {
+                        animationDuration : 500 
+                    }
+                }); }, 1000);
+            }).catch((error) => {
+                console.log("Error getting document:", error);
+            }); 
         }).catch((error) => {
             $( "#codein" ).prop( "disabled", false );
             output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">El código ingresado no es el correcto.</div>';
             $("#quote_result_code").hide().html(output).slideDown();
             $(".modal_validate_code i").addClass('d-none');   
-            $(".modal_validate_code").removeClass('d-none');
             $(".modal_validate_code b").text('Validar código');
            
           });
@@ -218,31 +241,26 @@ $(".modal_validate_code").on('click', function (){
          
             output = '<div class="alert-danger" style="padding:10px 15px; margin-bottom:30px;">Debe ingresar el codigo enviado.</div>';
             $("#quote_result_code").hide().html(output).slideDown();
-            $(".modal_validate_code i").addClass('d-none'); 
-            $(".modal_validate_code").removeClass('d-none');
+            $(".modal_validate_code i").addClass('d-none');  
             $(".modal_validate_code b").text('Validar código');
     }
 
 });
-
-$("#modal-contact-getcode").submit(function(e){ 
-    e.preventDefault();  
-});
+ 
+ 
 $("#contact-form-data").submit(function(e){ 
-    e.preventDefault();  
-    console.log('entrollllllllll');
+    e.preventDefault();   
 });
  
 window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
     'size': 'invisible',
     'callback': function(response) {
-        validatedata();
+        validatedata(); 
     }
   });
 
   recaptchaVerifier.render().then(function(widgetId) {
-    window.recaptchaWidgetId = widgetId; 
-    console.log('entro al render');
+    window.recaptchaWidgetId = widgetId;  
   });
 
 var buscador= _.debounce(function(word,fun){
@@ -276,7 +294,7 @@ $("#inputcard2").keyup(function(){
                         } 
                     return result;
                   }, []);
-                  console.log(window.usermain);
+                //   console.log(window.usermain);
 
                    $( "#numcel" ).focus();
               }else{   

@@ -116,6 +116,17 @@
     </div>
 
     <!--Get Quote Model Popup-->
+    <div class="animated-modal hidden quote-content" id="mensajeok">
+        <!--Heading-->
+        <div class="heading-area pb-2 mx-570"> 
+            <div class="row">
+                <div class="col-md-12"> 
+                    <span class="sub-title">Se actualizaron los datos correctamente.</span> 
+                    <h3 class="title mt-2" style="font-size: 24px;">Ascinalss <span class="alt-color js-rotating">somos, todos. </span></h3>
+               </div> 
+           </div>  
+       </div>
+    </div>
     <div class="animated-modal hidden quote-content" id="capcha">
         <!--Heading-->
         <div class="heading-area pb-2 mx-570"> 
@@ -128,6 +139,7 @@
            </div>  
        </div>
     </div>
+
     <div class="animated-modal hidden quote-content" id="getcode">
         <!--Heading-->  
         <div class="heading-area pb-2 mx-570">
@@ -145,9 +157,10 @@
                         </div> 
                     </div> 
                 <!--Button-->
-                <div class="col-md-12"> 
-                    <a class="btn btn-large btn-rounded btn-blue btn-hvr-pink modal_validate_code" href="javascript:void(0);"
-                       id="quote_submit_btn"><i class="mr-2 d-none" aria-hidden="true"></i><b>Validar código</b>
+                <div class="col-md-12">  
+                    <button class="btn btn-large btn-rounded btn-blue btn-hvr-pink modal_validate_code" type="submit" > 
+                        <i class="fa fa-spinner fa-spin mr-2 d-none" aria-hidden="true"></i>
+                        <b>Validar código</b>
                         <div class="btn-hvr-setting">
                             <ul class="btn-hvr-setting-inner">
                                 <li class="btn-hvr-effect"></li>
@@ -156,7 +169,7 @@
                                 <li class="btn-hvr-effect"></li>
                             </ul>
                         </div>
-                    </a>
+                    </button>
                 </div> 
             </div>
         </form>
@@ -164,73 +177,126 @@
 
     <div class="animated-modal hidden quote-content" id="animatedModal">
         <!--Heading--> 
-        <div class="heading-area pb-2 mx-570">
-            <span class="sub-title" style="font-size: 30px;">Actualiza tus datos</span>
+        <div class="heading-area pb-5 mx-570">
+            <span class="sub-title" style="font-size: 30px;">Datos del socio</span>
         </div>
         <!--Contact Form-->
         <form class="contact-form" id="modal-contact-form-data">
             <div class="row">
                 <!--Result-->
-                <div class="col-12" id="quote_result"></div> 
+                <div class="col-12" id="quote_result_contact"></div> 
                 <!--Left Column-->
                 <div class="col-md-6" style="text-align: left;">
-                    <div class="row">
-                        <label class="col-md-4 my-auto" style="font-weight: bold;" for="name">Nombre:</label>
-                        <input class="col-md-8 form-control" id="name" name="name" 
-                        placeholder="Nombre"  type="text">
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold; text-align: right; " for="namecontac">Nombre:</label>
+                        <input class="col-md-8 my-auto" id="namecontac" name="namecontac" style="text-transform:uppercase;" 
+                        placeholder="Nombre"  type="text" required>
                     </div>
-                    <div class="row">
-                        <label class="col-md-4 my-auto" style="font-weight: bold;" for="name">Especialidad:</label>
-                         <select class="col-md-8 form-control" id="exampleFormControlSelect1">
-                            <option value="11">1</option>
-                            <option value="12">2</option>
-                            <option value="13">3</option>
-                            <option value="14">4</option>
-                            <option value="15">5</option>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right; " for="apcontac">Ap. paterno:</label>
+                        <input class="col-md-8 my-auto" id="apcontac" name="apcontac" style="text-transform:uppercase;" 
+                        placeholder="Apellido paterno"  type="text" required>
+                    </div>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right; " for="amcontac">Ap. materno:</label>
+                        <input class="col-md-8 my-auto" id="amcontac" name="amcontac" style="text-transform:uppercase;" 
+                        placeholder="Apellido materno"  type="text" required>
+                    </div>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="naccontac">Fecha de nacimiento:</label>
+                        <input class="col-md-8 my-auto" type="date" id="naccontac" name="naccontac"  placeholder="yyyy-mm-dd" required>
+                    </div>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="cicontac">C.I.:</label>
+                        <input class="col-md-6 my-auto" id="cicontac" name="cicontac" 
+                        placeholder="Carnet de identidad"  type="number" required>
+                        <select class="col-md-2 my-auto form-control" id="extcontac">
+                            <option value="1">CH</option>
+                            <option value="2">LP</option>
+                            <option value="3">CB</option>
+                            <option value="4">OR</option>
+                            <option value="5">PT</option>
+                            <option value="6">TJ</option>
+                            <option value="7">SC</option>
+                            <option value="8">BN</option>
+                            <option value="9">PD</option>
                           </select>
                     </div>
-                    <div class="form-group">
-                        <input class="form-control" id="quote_type" name="projectType" placeholder="Project type" required=""
-                               type="text">
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="name">Estado civil:</label>
+                         <select class="col-md-8 my-auto" id="civilcontac">
+                            <option value="1">Soltero(a)</option>
+                            <option value="2">Casado(a)</option>
+                            <option value="3">Divorciado(a)</option>
+                            <option value="4">Viudo(a)</option> 
+                          </select>
+                    </div>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="dircontac">Dirección:</label>
+                        <textarea class="col-md-8 my-auto" id="dircontac"
+                                  name="dircontac" placeholder="Dirección actual" required></textarea>
                     </div>
                 </div>
 
                 <!--Right Column-->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input class="form-control" id="quote_email" name="userEmail" placeholder="Email" required=""
-                               type="email">
+                <div class="col-md-6 " style="text-align: left;">
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="numcontac">Num. papeleta:</label>
+                        <input class="col-md-8 my-auto" id="numcontac" name="numcontac"   type="text" disabled>
                     </div>
-                    <div class="form-group">
-                        <input class="form-control" id="quote_address" name="userAddress" placeholder="City / Country"
-                               required="" type="text">
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="cmcontac">Carnet militar:</label>
+                        <input class="col-md-8 my-auto" id="cmcontac" name="cmcontac" 
+                        placeholder="Carnet militar"  type="text" required>
                     </div>
-                    <div class="form-group">
-                        <input class="form-control" id="quote_budget" name="quoteBudget" placeholder="Budget" required=""
-                               type="text">
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right; " for="gradocontac">Grado:</label>
+                        <input list="listgrado" class="col-md-8 my-auto" id="gradocontac" name="gradocontac"  style="text-transform:uppercase;" 
+                        placeholder="Grado"  type="text" required>
+                        <datalist id="listgrado"> 
+                                <option value="SGTO.INL.">SGI</option> 
+                                <option value="SGTO.INCL.">SGI</option> 
+                                <option value="SGTO.2DO.">SG2</option> 
+                                <option value="SGTO.1RO.">SG1</option> 
+                                <option value="SOF.INL.">SOI</option> 
+                                <option value="SOF.2DO.">SO2</option> 
+                                <option value="SOF.1RO.">SO1</option> 
+                                <option value="SOF.MY.">SOM</option> 
+                                <option value="SOF.MTRE.">SMT</option>  
+                        </datalist> 
                     </div>
-                </div>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="destinocontac">Destino:</label>
+                        <input list="listdestino" class="col-md-8 my-auto" id="destinocontac" name="destinocontac"  style="text-transform:uppercase;"
+                        placeholder="Destino"  type="text" required>
+                        <datalist id="listdestino"> 
+                        </datalist> 
+                    </div>
 
-                <!--Full Column-->
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <textarea class="form-control" id="quote_message"
-                                  name="userMessage" placeholder="Please explain your project in detail."></textarea>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="telcontac">Telefono:</label>
+                        <input class="col-md-8 my-auto" id="telcontac" name="telcontac" 
+                        data-inputmask="'mask': '9999999'" placeholder="Telefono" type="text" required> 
                     </div>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="celcontac">Celular:</label>
+                        <input class="col-md-8 my-auto" id="celcontac" name="celcontac" 
+                        data-inputmask="'mask': '999-99999'" placeholder="Celular" type="text" disabled> 
+                    </div>
+                    <div class="row pb-2">
+                        <label class="col-md-4 my-auto" style="font-weight: bold;text-align: right;" for="emailcontac">Email:</label>
+                        <input class="col-md-8 my-auto" id="emailcontac" name="emailcontac" placeholder="Email" 
+                        data-inputmask="'mask': '*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]'" type="text" required> 
+                    </div>
+ 
                 </div>
+               
 
                 <!--Button-->
-                <div class="col-md-12">
-
-                    <div class="form-check">
-                        <label class="checkbox-lable">Contact by phone ins prefferedessss
-                            <input type="checkbox">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
-
-                    <a class="btn btn-large btn-rounded btn-blue btn-hvr-pink modal_contact_btn" href="javascript:void(0);"
-                       id="quote_submit_btn"><i class="fa fa-spinner fa-spin mr-2 d-none" aria-hidden="true"></i><b>Send Message</b>
+                <div class="col-md-12">  
+                    <button class="btn btn-large btn-rounded btn-blue btn-hvr-pink modal_contact_btn" type="submit" id="quote_submit_btn"> 
+                        <i class="fa fa-spinner fa-spin mr-2 d-none" aria-hidden="true"></i>
+                        <b>Actualizar datos</b>
                         <div class="btn-hvr-setting">
                             <ul class="btn-hvr-setting-inner">
                                 <li class="btn-hvr-effect"></li>
@@ -239,7 +305,7 @@
                                 <li class="btn-hvr-effect"></li>
                             </ul>
                         </div>
-                    </a>
+                    </button>
                 </div>
 
             </div>
@@ -612,7 +678,7 @@
                            
                         </div>
                         
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="grupobuttonn">
                             <button class="btn btn-large btn-rounded btn-purple btn-hvr-blue d-block mt-4 contact_btn" type="submit" id="sign-in-button"> 
                                 <i class="fa fa-spinner fa-spin mr-2 d-none" aria-hidden="true"></i>
                                 <b>Validar</b>
@@ -681,6 +747,7 @@
 <script src="vendor/js/jquery.themepunch.revolution.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
 <!-- SLIDER REVOLUTION EXTENSIONS -->
 <script src="vendor/js/extensions/revolution.extension.actions.min.js"></script>
 <script src="vendor/js/extensions/revolution.extension.carousel.min.js"></script>
